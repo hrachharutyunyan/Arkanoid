@@ -1,99 +1,63 @@
-public class Ball extends BaseObject
-{
+import java.awt.*;
 
-    private double speed;
-    private double direction;
-    private double dx;
-    private double dy;
+public class Ball extends GameObject {
 
-    private boolean isFrozen;
+    public static final int SCREEN_WIDTH = 800;
+    public static final int SCREEN_HEIGHT = 600;
 
-    public Ball(double x, double y, double speed, double direction)
-    {
-        super(x, y, 1);
+    public static final double BALL_RADIUS = 10.0;
+    public static final double BALL_VELOCITY = 0.6;
+    public static final double FT_STEP = 1.0;
 
-        this.direction = direction;
-        this.speed = speed;
+    double x, y;
+    double radius = BALL_RADIUS;
+    double velocityX = BALL_VELOCITY;
+    double velocityY = BALL_VELOCITY;
 
-        this.isFrozen = true;
+    Ball(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
-    public double getSpeed()
-    {
-        return speed;
+    void draw(Graphics g) {
+        g.setColor(Color.RED);
+        g.fillOval((int) left(), (int) top(), (int) radius * 2,
+                (int) radius * 2);
     }
 
-    public void setSpeed(double speed)
-    {
-        this.speed = speed;
-    }
+    void update(ScoreBoard scoreBoard, Paddle paddle) {
+        x += velocityX * FT_STEP;
+        y += velocityY * FT_STEP;
 
-    public double getDirection()
-    {
-        return direction;
-    }
-
-    public double getDx()
-    {
-        return dx;
-    }
-
-    public double getDy()
-    {
-        return dy;
-    }
-
-    public void setDirection(double direction)
-    {
-        this.direction = direction;
-
-        double angel = Math.toRadians(direction);
-        dx = Math.cos(angel) * speed;
-        dy = -Math.sin(angel) * speed;
-    }
-    @Override
-    public void draw(Canvas canvas)
-    {
-        canvas.setPoint(x, y, 'O');
-    }
-    public void move()
-    {
-        if (isFrozen) return;
-
-        x += dx;
-        y += dy;
-
-        checkRebound(1, (int) Arcanoid.game.getWidth(), 1, Arcanoid.game.getHeight() + 5);
-    }
-    public void checkRebound(int minx, int maxx, int miny, int maxy)
-    {
-        if (x < minx)
-        {
-            x = minx + (minx - x);
-            dx = -dx;
+        if (left() < 0)
+            velocityX = BALL_VELOCITY;
+        else if (right() > SCREEN_WIDTH)
+            velocityX = -BALL_VELOCITY;
+        if (top() < 0) {
+            velocityY = BALL_VELOCITY;
+        } else if (bottom() > SCREEN_HEIGHT) {
+            velocityY = -BALL_VELOCITY;
+            x = paddle.x;
+            y = paddle.y - 50;
+            scoreBoard.die();
         }
 
-        if (x > maxx)
-        {
-            x = maxx - (x - maxx);
-            dx = -dx;
-        }
-
-        if (y < miny)
-        {
-            y = miny + (miny - y);
-            dy = -dy;
-        }
-
-        if (y > maxy)
-        {
-            y = maxy - (y - maxy);
-            dy = -dy;
-        }
     }
-    public void start()
-    {
-        this.setDirection(direction);
-        this.isFrozen = false;
+
+    double left() {
+        return x - radius;
     }
+
+    double right() {
+        return x + radius;
+    }
+
+    double top() {
+        return y - radius;
+    }
+
+    double bottom() {
+        return y + radius;
+    }
+
 }

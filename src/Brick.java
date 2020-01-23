@@ -1,28 +1,20 @@
+import java.awt.*;
 
-public class Brick extends BaseObject
-{
-    //картинка для отрисовки
-    private static int[][] matrix = {
-            {0, 0, 0, 0, 0},
-            {0, 1, 1, 1, 0},
-            {0, 1, 1, 1, 0},
-            {0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 0},
-    };
+public class Brick extends Rectangle {
 
-    public Brick(double x, double y)
-    {
-        super(x,y,3);
+    public static final double BLOCK_WIDTH = 60.0;
+    public static final double BLOCK_HEIGHT = 20.0;
+    boolean destroyed = false;
+
+    Brick(double x, double y) {
+        this.x = x;
+        this.y = y;
+        this.sizeX = BLOCK_WIDTH;
+        this.sizeY = BLOCK_HEIGHT;
     }
 
-    @Override
-    public void draw(Canvas canvas)
-    {
-        canvas.drawMatrix(x - radius + 1, y, matrix, 'H');
-    }
-
-    @Override
-    public void move()
-    {
+    void draw(Graphics g) {
+        g.setColor(Color.YELLOW);
+        g.fillRect((int) left(), (int) top(), (int) sizeX, (int) sizeY);
     }
 }
